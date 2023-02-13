@@ -1,8 +1,10 @@
 #include "headers/map.hpp"
 #include <cstdlib>
 
-// returns MIN of two elements a and b
-#define MIN(a, b) ((a) < (b) ? (a) : (b))
+// returns min of two elements a and b
+static inline int min(int a, int b) {
+    return a < b ? a : b;
+}
 
 Map::Map(int rows, int cols, int screen_width, int screen_height, SDL_Renderer* ren) : map_rows(rows), map_cols(cols), renderer(ren) {
     using namespace std;
@@ -45,7 +47,7 @@ Map::Map(int rows, int cols, int screen_width, int screen_height, SDL_Renderer* 
     potion_dest.y = row * dest.h + potion_dest.h;
 
     // trees in map start from 2 for 8x8 and increace by one for each dimentions' increase
-    int number_of_trees = 2 + MIN(map_rows, map_cols) - 8;
+    int number_of_trees = 2 + min(map_rows, map_cols) - 8;
     for (int i = 0; i < number_of_trees; i++) {
         // create a new tree destination with random coordinates in map
         SDL_Rect* tree_dest = new SDL_Rect;
@@ -73,7 +75,7 @@ Map::Map(int rows, int cols, int screen_width, int screen_height, SDL_Renderer* 
     // lakes in map are 2x2 (compared to grass or tree being 1x1) and is one if map's size is 8x8-10x10
     // or are two if map's size is 11x11
     int number_of_lakes = 1;
-    if (MIN(map_rows, map_cols) == 11)
+    if (min(map_rows, map_cols) == 11)
         number_of_lakes++;
     for (int i = 0; i < number_of_lakes; i++) {
         // create a new lake destination with random coordinates in map

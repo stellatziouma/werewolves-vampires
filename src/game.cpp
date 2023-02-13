@@ -1,8 +1,7 @@
 #include "headers/game.hpp"
 #include "headers/map.hpp"
 #include "headers/avatar.hpp"
-#include "headers/werewolf.hpp"
-#include "headers/vampire.hpp"
+#include "headers/wv.hpp"
 #include <string>
 
 Game::Game(const char* title, int w, int h, int map_rows, int map_cols) : screen_width(w), screen_height(h) {
@@ -22,8 +21,8 @@ Game::Game(const char* title, int w, int h, int map_rows, int map_cols) : screen
     srand(time(NULL));
     int num_of_creatures = werewolves = vampires = map_rows * map_cols / 15;
     for (int i = 0; i < num_of_creatures; i++) {
-        creatures.push_back(new Werewolf(renderer, map, &creatures, screen_height / map_rows));
-        creatures.push_back(new Vampire(renderer, map, &creatures, screen_height / map_rows));
+        creatures.push_back(new WV(renderer, map, &creatures, screen_height / map_rows, true));
+        creatures.push_back(new WV(renderer, map, &creatures, screen_height / map_rows, false));
     }
 
     // init game's avatar
