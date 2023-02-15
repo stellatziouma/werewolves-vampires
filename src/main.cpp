@@ -43,7 +43,6 @@ int main(int argc, char* argv[]) {
     else if (map_cols < map_rows)
         height += 660 / map_rows;
 
-    // start the game
     Game* game = new Game("Werewolves VS Vampires", width, height, map_rows, map_cols);
     game->run();
     delete game;

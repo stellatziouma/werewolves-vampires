@@ -1,259 +1,95 @@
+#include <iostream>
+#include <cstdlib>
 #include "headers/creature.hpp"
 #include "headers/map.hpp"
 
-Creature::Creature(SDL_Renderer* r, Map* map, vector<Creature*>* c, int scale) : creatures(c), renderer(r) {
-    // find random position for the creature
-    int row, col;
-    static bool** place_taken = map->get_place_taken();
-    // find coordinates where there is no tree or lake or other creature
-    do {
-        row = rand() % map->get_rows();
-        col = rand() % map->get_cols();
+Creature::Creature(SDL_Renderer* render, Map* map, vector<GameEntity*>* creatures, int scale, bool is_werewolf) : GameEntity(render, map, creatures, scale) {
+    // Load creature's images
+    SDL_Surface *image, *hurt, *cured;
+    if (is_werewolf) {
+        type = "Werewolf";
+        image = IMG_Load("res/werewolf.png");
+        hurt = IMG_Load("res/hurt_werewolf.png");
+        cured = IMG_Load("res/healed_werewolf.png");
     }
-    while(place_taken[row][col]);
+    else {
+        type = "Vampire";
+        image = IMG_Load("res/vampire.png");
+        hurt = IMG_Load("res/hurt_vampire.png");
+        cured = IMG_Load("res/healed_vampire.png");
+    }
+    resized.h = image->h / 4;
+    resized.w = image->w / 3;
+    texture = SDL_CreateTextureFromSurface(renderer, image);
+    SDL_FreeSurface(image);
+    hurt_texture = SDL_CreateTextureFromSurface(renderer, hurt);
+    SDL_FreeSurface(hurt);
+    cured_texture = SDL_CreateTextureFromSurface(renderer, cured);
+    SDL_FreeSurface(cured);
 
-    curr_move = Move::STOP; 
+    //init random strength, defense, health and cure
+    strength = rand() % 3 + 1;
+    defense = rand() % 2 + 1;
+    health = 10;
+    cure = rand() % 3;
 
-    ///////////Graphics///////////
-    // init animation
-    animation = new Animation;
-    animation->frames = 3;
-    animation->scale = scale;
-    animation->speed = 180;
-
-    // init movement
-    velocity = new Velocity;
-    velocity->speed = 1;
-    velocity->x = velocity->y = 0;
-
-    // init Creature's coordinates and dimentions
-    //scale is the width and height of a tile in the map
-    dest.h = dest.w = scale;
-    dest.x = col * scale;
-    dest.y = row * scale; 
     resized.x = resized.y = 0;
+
+    activated = is_hurt = is_cured = 0;
 }
 
 Creature::~Creature() {
-    delete velocity;
-    delete animation;
-    // destroy texture
-    SDL_DestroyTexture(texture);
+    SDL_DestroyTexture(hurt_texture);
+    SDL_DestroyTexture(cured_texture);
 }
 
-//set new health and start cured animation if need be
-void Creature::set_health(int new_health) { 
-    is_cured = new_health > health ? 1 : is_cured; // start cured animation
-    health = new_health; 
-}
+void Creature::update(Map* map) {
+    if (activated > 0 && activated < dest.h + 1) { // if the Creature is in motion
+        dest.x += velocity->x * velocity->speed;
+        dest.y += velocity->y * velocity->speed;
 
-// if there is an interaction check if it is with an ally or an enemy and act accordingly
-void Creature::interaction(Creature* creature) {
-    if (is_ally(creature)) {
-        // if interaction's creature health isn't maximum 
-        if (creature->get_health() < 10) {
-            // choose randomly if it will help the ally
-            if (rand() % 2 && cure > 0) {
-                cure--;
-                creature->set_health(creature->get_health() + 1);
-            }
-        }
+        if (curr_move != Move::STOP)
+            resized.x = resized.w * static_cast<int>((SDL_GetTicks64() / animation->speed) % animation->frames);// perform movement's animation
+        else
+            resized.x = resized.w;
+        //increase the variable activated according to the speed so the Creature will move per square 
+        activated += velocity->speed;
     }
     else {
-        // if it isn't an ally check for if the creature will receive an attack
-        if (strength <= creature->get_strength()) {
-            health -= abs((creature->get_strength() - defense));
-            is_hurt = 1; // start hurt animation
-        }
-    }
-}
-
-
-//check if there is an interaction and if it is an enemy return the move that will lead to it else return stop
-Move Creature::check_interaction() {
-    int col = get_col();
-    int row = get_row();
-    // for evey creature check if it is next to it
-    for (int i = 0 ; i < (int)creatures->size(); i++) {
-        int creature_col = (*creatures)[i]->get_col();
-        int creature_row = (*creatures)[i]->get_row();
-        if (row == creature_row && col - 1 == creature_col) {
-            interaction((*creatures)[i]);
-            if (is_hurt)
-                return Move::LEFT;
-        }
-        else if (row == creature_row && col + 1 == creature_col) {
-            interaction((*creatures)[i]);
-            if (is_hurt)
-                return Move::RIGHT;
-        }
-        else if (row - 1 == creature_row && col == creature_col) {
-            interaction((*creatures)[i]);
-            if (is_hurt)
-                return Move::UP;
-        }
-        else if (row + 1 == creature_row && col == creature_col) {
-            interaction((*creatures)[i]);
-            if (is_hurt)
-                return Move::DOWN;
-        }
-    }
-    return Move::STOP;
-}
-
-// update velocity's axes according to the current move
-void Creature::update_velocity() {
-    // minus or plus 1 to axis the creature is moving(minus if it moves backward to this axis or plus if it moves forward to it)
-    if (curr_move == Move::LEFT)
-        velocity->x = -1;
-    else if (curr_move == Move::RIGHT)
-        velocity->x = 1;
-    else if (curr_move == Move::UP)
-        velocity->y = -1;
-    else if (curr_move == Move::DOWN)
-        velocity->y = 1;
-    else if (curr_move == Move::STOP)
-        velocity->x = velocity->y = 0;
-    else {
-        if (type != "Vampire")
+        //init activated since Creature will start a new move
+        activated = 1;
+        velocity->y = velocity->x = 0;
+        Move enemy = check_interaction();
+        if (get_health() <= 0)
             return;
-        // vampires can also move diagonally
-        if (curr_move == Move::UL) {
-            velocity->x = -1;
-            velocity->y = -1;
-        }
-        else if (curr_move == Move::UR) {
-            velocity->x = 1;
-            velocity->y = -1;
-        }
-        else if (curr_move == Move::DL) {
-            velocity->x = -1;
-            velocity->y = 1;
-        }
-        else if (curr_move == Move::DR) {
-            velocity->x = 1;
-            velocity->y = 1;
-        }
+        move(map, enemy);
+        update_velocity();
+        //change the row of the image Creature.png so the wolf will look in different directions as it moves
+        if (curr_move == Move::LEFT)
+            resized.y = 3 * resized.h;
+        else if (curr_move == Move::RIGHT)
+            resized.y = resized.h;
+        else if (curr_move == Move::UP)
+            resized.y = 0;
+        else if (curr_move == Move::DOWN)
+            resized.y = 2 * resized.h;
     }
 }
 
-static Move random_move(int num) {
-    // random number from 0 to num-1 according to number of moves of each creature
-    int temp_move = rand() % num;
-
-    //according to the random number return the corresponding move
-    if (temp_move == 0)
-        return Move::LEFT;
-    else if (temp_move == 1)
-        return Move::RIGHT;
-    else if (temp_move == 2)
-        return Move::UP;
-    else if (temp_move == 3)
-        return Move::DOWN;
-    else if (temp_move == 4) 
-        return Move::STOP;
-    else if (temp_move == 5)
-        return Move::UL;
-    else if (temp_move == 6)
-        return Move::UR;
-    else if (temp_move == 7)
-        return Move::DR;
-    else 
-        return Move::DL;
-}
-
-// find a legal move and change the place_taken array so there are no collisions on the same tile
-void Creature::move(Map* map, Move enemy_move) {
-    int num_of_moves = type == "Vampire" ? 9 : 5;
-    //random valid move
-    do
-        curr_move = random_move(num_of_moves);
-    while(!is_move_legal(map) || !walk_away(enemy_move));
-
-    //change the place_taken array of class map to avoid collisions between creatures
-    static bool** place_taken = map->get_place_taken();
-
-    int row = get_row();
-    int col = get_col();
-
-    //change the value of current tile according to the current move(if the move isn't Stop current tile becomes false since the creature will move)
-    place_taken[row][col] = curr_move == Move::STOP;
-
-    //for every move change to true the destination tile
-    if (curr_move == Move::LEFT)
-       place_taken[row][col - 1] = true;
-    else if (curr_move == Move::RIGHT)
-        place_taken[row][col + 1] = true;
-    else if (curr_move == Move::UP)
-        place_taken[row - 1][col] = true;
-    else if (curr_move == Move::DOWN)
-        place_taken[row + 1][col] = true;
+void Creature::draw() { 
+    //draw the image of the injured Creature for 15 game loops
+    if (is_hurt > 0 && is_hurt <= 15) {
+        SDL_RenderCopy(renderer, hurt_texture, &resized, &dest);
+        is_hurt++;
+    }
+    else if (is_cured > 0 && is_cured <= 15) {
+        SDL_RenderCopy(renderer, cured_texture, &resized, &dest);
+        is_cured++;
+    }
+    //draw normal image
     else {
-        if (type != "Vampire")
-            return;
-        if (curr_move == Move::UL) 
-            place_taken[row - 1][col - 1] = true;
-        else if (curr_move == Move::UR) 
-            place_taken[row - 1][col + 1] = true;
-        else if (curr_move == Move::DL) 
-            place_taken[row + 1][col - 1] = true;
-        else if (curr_move == Move::DR) 
-            place_taken[row + 1][col + 1] = true;
+        is_hurt = 0;
+        is_cured = 0;
+        SDL_RenderCopy(renderer, texture, &resized, &dest);
     }
-}
-
-// check if the current move is legal(if it leads out of boundaries or on an occupied tile)
-bool Creature::is_move_legal(Map* map) {
-    //array with all the trees, lakes and creatures
-    static bool** place_taken = map->get_place_taken();
-    //number of columns and rows
-    static int map_col = map->get_cols();
-    static int map_row = map->get_rows();
-    
-    //creature's column and row
-    int col = get_col();
-    int row = get_row();
-
-    //check for the kind of current move if with that the creature goes out of board limits or above tree, lake or creature
-    if (curr_move == Move::UP && (row - 1 < 0 || place_taken[row - 1][col]))
-        return false;
-    else if (curr_move == Move::DOWN && (row + 1 == map_row || place_taken[row + 1][col]))
-        return false;
-    else if (curr_move == Move::LEFT && (col - 1 < 0 || place_taken[row][col - 1]))
-        return false;
-    else if (curr_move == Move::RIGHT && (col + 1 == map_col || place_taken[row][col + 1]))
-        return false;
-    else if (curr_move == Move::UR && (row - 1 < 0 || col + 1 == map_col || place_taken[row - 1][col + 1]))
-        return false;
-    else if (curr_move == Move::UL && (row - 1 < 0 || col - 1 < 0 || place_taken[row - 1][col - 1]))
-        return false;
-    else if (curr_move == Move::DL && (row + 1 == map_row || col - 1 < 0 || place_taken[row + 1][col - 1]))
-        return false;
-    else if (curr_move == Move::DR && (row + 1 == map_row || col + 1 == map_col || place_taken[row + 1][col + 1]))
-        return false;
-    return true;
-}
-
-// if the creature has receive an attack try to escape
-// enemy_move is the move that leads to the attacker
-bool Creature::walk_away(Move enemy_move) {
-    if (enemy_move == Move::STOP)
-        return true;
-    else {
-        // return false if the current move leads to the attacker
-        if (curr_move == enemy_move)
-            return false;
-        // if the creature is vampire check for diagonal moves
-        if (get_type() == "Vampire"){
-            if (curr_move == Move::UR && (enemy_move == Move::UP || enemy_move == Move::RIGHT))
-                return false;
-            else if (curr_move == Move::UL && (enemy_move == Move::UP || enemy_move == Move::LEFT))
-                return false;
-            else if (curr_move == Move::DL && (enemy_move == Move::DOWN || enemy_move == Move::LEFT))
-                return false;
-            else if (curr_move == Move::DR && (enemy_move == Move::DOWN || enemy_move == Move::RIGHT))
-                return false;
-        }
-    }
-    return true;
 }

@@ -10,14 +10,13 @@ using std::vector;
 
 class Map;
 class Avatar;
-class Creature;
+class GameEntity;
 
 // main class initializing the game
 class Game {
 public:
     Game(const char* title, int w, int h, int rows, int cols);
     ~Game();
-
     void run();
 private:
     void update();
@@ -27,11 +26,8 @@ private:
     void pause();
     void init_numbers_text();
 
-    ///////////// Graphics /////////////
     SDL_Window* window;
     SDL_Renderer* renderer;
-
-    bool is_game_running;
 
     // current keyboard-input event
     SDL_Event event;
@@ -42,8 +38,8 @@ private:
     // game's avatar/player
     Avatar* avatar;
 
-    // vector of Creatures (Werewolves and Vampires)
-    vector<Creature*> creatures;
+    // vector of creatures (Werewolves and Vampires)
+    vector<GameEntity*> creatures;
 
     // window's dimetions
     int screen_width, screen_height;
@@ -51,6 +47,8 @@ private:
     // number of creatures alive and potions avatar holds
     int werewolves, vampires;
     int* potions;
+
+    bool is_game_running;
     
     ////////////// stats-related graphics//////////////
 

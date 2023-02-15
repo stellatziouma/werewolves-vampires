@@ -13,9 +13,7 @@ class Map {
 public:
     Map(int rows, int cols, int screen_width, int screen_height, SDL_Renderer* renderer);
     ~Map();
-
     void draw();
-
     bool** get_place_taken() const { return place_taken; }
     int get_rows() const { return map_rows; }
     int get_cols() const { return map_cols; }
@@ -24,14 +22,10 @@ public:
 private:
     // world's/map's dimentions; given by user
     int map_rows, map_cols;
-
     // bool array representing taken spots in map by trees, lakes and all Creatures besides Avatar
     bool** place_taken;
-
     // determines if is day or night
     bool is_day;
-
-    //////////////// Graphics ////////////////
 
     // day and night packs of tetxures
     Textures *day, *night;

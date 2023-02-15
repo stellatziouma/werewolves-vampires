@@ -1,37 +1,34 @@
 #include "headers/game.hpp"
 #include "headers/map.hpp"
 #include "headers/avatar.hpp"
-#include "headers/wv.hpp"
+#include "headers/creature.hpp"
 #include <string>
 
 Game::Game(const char* title, int w, int h, int map_rows, int map_cols) : screen_width(w), screen_height(h) {
     SDL_Init(SDL_INIT_EVERYTHING);
     TTF_Init();
-
-    // init window and renderer
     window = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, w, h, SDL_WINDOW_SHOWN);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
     is_game_running = true;
 
+    srand(time(NULL));
+
     // init map
     map = new Map(map_rows, map_cols, screen_width, screen_height, renderer);
 
     // number of each creature placed in game map
-    srand(time(NULL));
     int num_of_creatures = werewolves = vampires = map_rows * map_cols / 15;
     for (int i = 0; i < num_of_creatures; i++) {
-        creatures.push_back(new WV(renderer, map, &creatures, screen_height / map_rows, true));
-        creatures.push_back(new WV(renderer, map, &creatures, screen_height / map_rows, false));
+        creatures.push_back(new Creature(renderer, map, &creatures, screen_height / map_rows, true));
+        creatures.push_back(new Creature(renderer, map, &creatures, screen_height / map_rows, false));
     }
 
     // init game's avatar
     avatar = new Avatar(renderer, map, &creatures, screen_height / map_rows);
-
     // avatar's potions
     potions = avatar->get_potions();
 
-    ///////////// Graphics /////////////
     // init stats category images
     SDL_Surface* image = IMG_Load("res/werewolves_stats.png");
     w_text = SDL_CreateTextureFromSurface(renderer, image);
@@ -69,24 +66,18 @@ Game::Game(const char* title, int w, int h, int map_rows, int map_cols) : screen
 }
 
 Game::~Game() {
-    // destroy game's map
     delete map;
-    // delete avatar
     delete avatar;
-    // delete creatures
     for (auto c : creatures)
         delete c;
     creatures.clear();
-    // destroy stats' - all
     SDL_DestroyTexture(w_text);
     SDL_DestroyTexture(v_text);
     SDL_DestroyTexture(p_text);
     for (int i = 0; i <= werewolves; i++)
         SDL_DestroyTexture(numbers[i]);
     numbers.clear();
-    // destroy paused image
     SDL_DestroyTexture(paused);
-    // destroy window
     TTF_Quit();
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
@@ -100,26 +91,22 @@ void Game::update() {
         return;
     }
 
-    // update avatar
     avatar->update(map);
 
-    // maps visited array
     static bool** place_taken = map->get_place_taken();
     // delete objects if need be
     for (int i = 0; i < (int)creatures.size(); i++) {
         if (creatures[i]->get_health() <= 0) {
             // determine type of creature killed
             creatures[i]->get_type() == "Werewolf" ? werewolves-- : vampires--;
-            // make creature's old-place false in array
             place_taken[creatures[i]->get_row()][creatures[i]->get_col()] = false;
-            // delete it and remove vector node
             delete creatures[i];
             creatures.erase(creatures.begin() + i);
         }
     }
-    // update alive creatures
+
     for (auto c : creatures)
-        if (c->get_health() > 0) // make sure creature is alive
+        if (c->get_health() > 0)
             c->update(map);
 }
 
@@ -142,7 +129,7 @@ void Game::run() {
     }
 }
 
-// handle's user's input
+// handle's user input
 void Game::handle_events() {
     SDL_PollEvent(&event);
     if (event.type == SDL_QUIT) // quit game
@@ -178,17 +165,13 @@ void Game::pause() {
 }
 
 void Game::draw() {
-    // begin drawing
     SDL_RenderClear(renderer);
 
-    // draw map
     map->draw();
-    // draw avatar
     avatar->draw();
-    // draw creatures
     for (auto c : creatures)
         c->draw();
-    // draw stats section
+    // stats section
     SDL_RenderCopy(renderer, w_text, NULL, &destw_text);
     SDL_RenderCopy(renderer, v_text, NULL, &destv_text);
     SDL_RenderCopy(renderer, p_text, NULL, &destp_text);
@@ -196,11 +179,9 @@ void Game::draw() {
     SDL_RenderCopy(renderer, numbers[vampires], NULL, &destv_num);
     SDL_RenderCopy(renderer, numbers[*potions], NULL, &destp_num);
 
-    // end drawing
     SDL_RenderPresent(renderer);
 }
 
-// determines if game is over aka if a team won
 bool Game::game_over() const {
     if (!vampires) {
         std::cout << "Werewolves Win !!!" << std::endl;

@@ -17,7 +17,6 @@ Textures::Textures(SDL_Renderer* ren, bool is_day) {
 }
 
 Textures::~Textures() {
-    // destroy textures
     SDL_DestroyTexture(background);
     SDL_DestroyTexture(tree);
     SDL_DestroyTexture(lake);

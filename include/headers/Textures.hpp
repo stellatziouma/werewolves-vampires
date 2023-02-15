@@ -3,7 +3,7 @@
 #include "sdl2/SDL.h"
 #include "sdl2/SDL_image.h"
 
-// a class combining needed textures of game
+// a class combining needed textures of the game
 // based on if day or night
 class Textures {
 public:

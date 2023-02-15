@@ -14,11 +14,9 @@ Map::Map(int rows, int cols, int screen_width, int screen_height, SDL_Renderer* 
     dest.h = screen_height / map_rows;
     dest.w = (screen_width - 300) / map_cols; // leave space for "stats section" (next to map)
 
-    // init game's day and night textures objects
     day = new Textures(renderer);
     night = new Textures(renderer, false);
 
-    // place taken array init
     // stores true cells which (currently) contain an object or creature
     place_taken = new bool* [map_rows];
     for (int i = 0; i < map_rows; i++)
@@ -27,7 +25,6 @@ Map::Map(int rows, int cols, int screen_width, int screen_height, SDL_Renderer* 
         for (int j = 0; j < map_cols; j++)
             place_taken[i][j] = false;
 
-    // init game's potion texture
     SDL_Surface* image = IMG_Load("res/potion.png");
     potion = SDL_CreateTextureFromSurface(renderer, image);
     SDL_FreeSurface(image);
@@ -38,7 +35,6 @@ Map::Map(int rows, int cols, int screen_width, int screen_height, SDL_Renderer* 
         col = rand() % map_cols;
     }
     while (place_taken[row][col]);
-    // mark map-place as visited
     place_taken[row][col] = true;
     // assign values; potion is half the size of a map-tile
     potion_dest.w = dest.w / 2;
@@ -46,7 +42,7 @@ Map::Map(int rows, int cols, int screen_width, int screen_height, SDL_Renderer* 
     potion_dest.x = col * dest.w + potion_dest.w;
     potion_dest.y = row * dest.h + potion_dest.h;
 
-    // trees in map start from 2 for 8x8 and increace by one for each dimentions' increase
+    // trees in map start from 2 for 8x8 and increace by one for each dimentions increase
     int number_of_trees = 2 + min(map_rows, map_cols) - 8;
     for (int i = 0; i < number_of_trees; i++) {
         // create a new tree destination with random coordinates in map
@@ -61,14 +57,12 @@ Map::Map(int rows, int cols, int screen_width, int screen_height, SDL_Renderer* 
         while (tree_dest->x == 0 || tree_dest->x == map_cols - 1 || 
             tree_dest->y == 0 || tree_dest->y == map_rows - 1 ||
             place_taken[tree_dest->y][tree_dest->x]);
-        // inform place taken array
+        
         place_taken[tree_dest->y][tree_dest->x] = true;
 
-        // actual position
         tree_dest->x *= tree_dest->w;
         tree_dest->y *= tree_dest->h;
 
-        // add to vector
         trees_dest.push_back(tree_dest);
     }
 
@@ -102,36 +96,25 @@ Map::Map(int rows, int cols, int screen_width, int screen_height, SDL_Renderer* 
         lake_dest->x *= dest.w;
         lake_dest->y *= dest.h;
 
-        // add to vector
         lakes_dest.push_back(lake_dest);
     }
 }
 
 Map::~Map() {
-    // destroy textures
     delete day;
     delete night;
-    
-    // destroy tetxure
     SDL_DestroyTexture(potion);
-
-    // free memory of used trees' destinations
     for (auto t : trees_dest)
         delete t;
-
-    // free memory of used lakes' destinations
     for (auto l : lakes_dest)
         delete l;
-
-    // free place taken array
     for (int i = 0; i < map_rows; i++)
         delete place_taken[i];
     delete place_taken;
 }
 
-// draws game map
 void Map::draw() {
-    // determine if day or night, based on a simple counter
+    // determine if day or night
     static int counter = 0;
     static Textures* time_is = nullptr;
     static const int textures_change = 700;

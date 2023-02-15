@@ -1,7 +1,7 @@
 #include "headers/avatar.hpp"
 #include "headers/map.hpp"
 
-Avatar::Avatar(SDL_Renderer* ren, Map* map, vector<Creature*>* creatures, int scale) : Creature(ren, map, creatures, scale) {
+Avatar::Avatar(SDL_Renderer* ren, Map* map, vector<GameEntity*>* creatures, int scale) : GameEntity(ren, map, creatures, scale) {
     type = "Avatar";
 
     // init player holding one potion
@@ -12,7 +12,7 @@ Avatar::Avatar(SDL_Renderer* ren, Map* map, vector<Creature*>* creatures, int sc
         std::cin >> team;
     }
     while (team != "V" && team != "W" && team != "v" && team != "w");
-    team = team == "v" || team == "V" ? "Vampire" : "Werewolf";
+        team = team == "v" || team == "V" ? "Vampire" : "Werewolf";
 
     // load avatar's image
     SDL_Surface* image = IMG_Load("res/avatar.png");
@@ -34,7 +34,7 @@ static inline int closer_int(float f) {
     return (int)(f + 0.5);
 }
 
-// returns if avatar's current move is legal
+// returns true if avatar's current move is legal
 bool Avatar::is_move_legal(Map* map) {
     // needed for collision-checking
     static bool** place_taken = map->get_place_taken();
@@ -71,7 +71,7 @@ bool Avatar::potion_grab(Map* map, float row, float col) {
     static const int potion_row = potion_pos.y / dest.h;
     static const int potion_col = potion_pos.x / dest.w;
 
-    // check if potion was previously/already grabbed
+    // check if potion was previously grabbed
     if (!potion_pos.w || !potion_pos.h)
         return false;
 
@@ -118,36 +118,35 @@ void Avatar::handle_events(SDL_Event event, bool is_day) {
     // determines if a key is currently down/pressed
     static bool is_key_pressed = false;
 
-    // arrow keys are used to move the avatar
     if (event.type == SDL_KEYDOWN) {
         // if another (arrow or h) key is being pressed
-        // don't allow another one to be pressed at the moment
+        // don't allow another one to be pressed at the same time
         if (is_key_pressed)
             return;
         switch (event.key.keysym.sym)
         {
         // resized.y is modified because of change of animation/change direction avatar points
-        case SDLK_UP: // up arrow
+        case SDLK_UP:
             curr_move = Move::UP;
             is_key_pressed = true;
             resized.y = 0;
             break;
-        case SDLK_DOWN: // down arrow
+        case SDLK_DOWN:
             curr_move = Move::DOWN;
             is_key_pressed = true;
             resized.y = 2 * resized.h;
             break;
-        case SDLK_LEFT: // left arrow
+        case SDLK_LEFT:
             curr_move = Move::LEFT;
             is_key_pressed = true;
             resized.y = 3 * resized.h;
             break;
-        case SDLK_RIGHT: // right arrow
+        case SDLK_RIGHT:
             curr_move = Move::RIGHT;
             is_key_pressed = true;
             resized.y = resized.h;
             break;
-        case SDLK_h: // h key
+        case SDLK_h:
             is_key_pressed = true;
             if (!potions) // no potions left
                 return;
