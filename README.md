@@ -29,3 +29,4 @@ All used sprites are from [opengameart.org](https://opengameart.org/). The follo
 - [tree](https://opengameart.org/content/pine-tree-tiles)
 - [grass](https://opengameart.org/content/2d-modified-dark-forest-tileset)
 - [potion](https://opengameart.org/content/potion-bottles)
+- [lake](https://craftpix.net/freebies/free-top-down-military-boats-pixel-art/)
