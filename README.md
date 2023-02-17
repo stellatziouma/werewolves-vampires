@@ -4,6 +4,28 @@
     <img src="res/game.gif" width=700>
 </p>
 
+<center><b><i>Werewolves VS Vampires! Which team will survive? How will the Avatar impact the final result?</i></b></center>
+A simple fun game, in which a team of werewolves fights against a team of vampires. The last team standing wins. The Avatar (player) opts in favor of a team which he can help by using magical potions. The potions increase each creature's health to the maximum amount, thus aiding the team in surviving.
+
 ## Authors
 - [Stella Tziouma](https://github.com/stellatziouma)
 - [Giorgos Sofronas](https://github.com/giorgossofronas)
+
+## About & How to Play
+The project was created entirely in C++, for the needs of the course Object Oriented Programming in our 3rd semester. A detailed description of the assignment is included in the root of the repository in Greek.
+<br><br>
+The game is designed solely for the **Windows** operating system. To play the game simply clone the repository and compile using *make* or manually through the provided command in the Makefile.<br><br>
+Some basics rules to play are:
+- Use the *arrow* keys to move the player around the map.
+- Use the *h* key to heal the team in favor. Note that werewolves can only be healed at night and vampires at day.
+- Use the *p* key to pause/unpause the game.
+
+## Credits
+For the UI we used the open source library [SDL](https://www.libsdl.org/).
+All used sprites are from [opengameart.org](https://opengameart.org/). The following list contains links to all of them.
+- [werewolf](https://opengameart.org/content/werewolf-lpc)
+- [vampire](https://opengameart.org/content/vampires-rework)
+- [avatar](https://opengameart.org/content/universal-lpc-sprite-male-01)
+- [tree](https://opengameart.org/content/pine-tree-tiles)
+- [grass](https://opengameart.org/content/2d-modified-dark-forest-tileset)
+- [potion](https://opengameart.org/content/potion-bottles)
