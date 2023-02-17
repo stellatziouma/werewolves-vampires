@@ -21,8 +21,8 @@ Some basics rules to play are:
 - Use the *p* key to pause/unpause the game.
 
 ## Credits
-For the UI we used the open source library [SDL](https://www.libsdl.org/).
-All used sprites are from [opengameart.org](https://opengameart.org/). The following list contains links to all of them.
+For the UI we used the open source library [SDL](https://www.libsdl.org/).<br>
+The following list contains links to all used sprites.
 - [werewolf](https://opengameart.org/content/werewolf-lpc)
 - [vampire](https://opengameart.org/content/vampires-rework)
 - [avatar](https://opengameart.org/content/universal-lpc-sprite-male-01)
