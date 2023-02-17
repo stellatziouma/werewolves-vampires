@@ -4,7 +4,7 @@
     <img src="res/game.gif" width=700>
 </p>
 
-<center><b><i>Werewolves VS Vampires! Which team will survive? How will the Avatar impact the final result?</i></b></center>
+<center><b><i>Werewolves VS Vampires! Which team will survive? How will the Avatar impact the final result?</i></b></center><br>
 A simple fun game, in which a team of werewolves fights against a team of vampires. The last team standing wins. The Avatar (player) opts in favor of a team which he can help by using magical potions. The potions increase each creature's health to the maximum amount, thus aiding the team in surviving.
 
 ## Authors
