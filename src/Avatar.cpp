@@ -8,7 +8,7 @@ Avatar::Avatar(SDL_Renderer* ren, Map* map, vector<GameEntity*>* creatures, int 
     potions = 1;
 
     do {
-        std::cout << "Press V to support vampires\nPress W to support werewolfs" << std::endl;
+        std::cout << "Press W to support Werewolves\nPress V to support Vampires" << std::endl;
         std::cin >> team;
     }
     while (team != "V" && team != "W" && team != "v" && team != "w");
