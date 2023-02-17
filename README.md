@@ -11,14 +11,19 @@ A simple fun game, in which a team of werewolves fights against a team of vampir
 - [Stella Tziouma](https://github.com/stellatziouma)
 - [Giorgos Sofronas](https://github.com/giorgossofronas)
 
-## About & How to Play
-The project was created entirely in C++, for the needs of the course Object Oriented Programming in our 3rd semester. A detailed description of the assignment is included in the root of the repository in Greek.
-<br><br>
-The game is designed solely for the **Windows** operating system. To play the game simply clone the repository and compile using *make* or manually through the provided command in the Makefile.<br><br>
-Some basics rules to play are:
+## About
+This project was created entirely in C++ for the Object-Oriented Programming course during our 3rd semester. A detailed description of the assignment can be found in the root of the repository in Greek.
+
+## How to Play
+To play the game, simply clone the repository and compile it using make or manually through the provided command in the Makefile. Please note that this game is designed solely for the Windows operating system.
+
+## Game Rules
+Here are some basic rules to help you play the game:
 - Use the *arrow* keys to move the player around the map.
 - Use the *h* key to heal the team in favor. Note that werewolves can only be healed at night and vampires at day.
 - Use the *p* key to pause/unpause the game.
+
+Have fun playing and good luck!
 
 ## Credits
 For the UI we used the open source library [SDL](https://www.libsdl.org/).<br>
