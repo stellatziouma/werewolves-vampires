@@ -23,7 +23,7 @@ Here are some basic rules to help you play the game:
 - Use the *h* key to heal the team in favor. Note that werewolves can only be healed at night and vampires at day.
 - Use the *p* key to pause/unpause the game.
 
-Have fun playing and good luck!
+Have fun playing and good luck!!!
 
 ## Credits
 For the UI we used the open source library [SDL](https://www.libsdl.org/).<br>
