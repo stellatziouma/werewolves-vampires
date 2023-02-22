@@ -12,7 +12,7 @@ A fun and simple game where a team of werewolves fights against a team of vampir
 - [Giorgos Sofronas](https://github.com/giorgossofronas)
 
 ## About
-This project was created entirely in C++ for the Object-Oriented Programming course during our 3rd semester. A detailed description of the assignment can be found in the root of the repository in Greek.
+This project was created entirely in C++ for the Object-Oriented Programming course during our 3rd semester. It received a grade of 9,4/10. A detailed description of the assignment can be found in the root of the repository in Greek.
 
 ## How to Play
 To play the game, simply clone the repository and compile it using make or manually through the provided command in the Makefile. Please note that this game is designed solely for the Windows operating system.
