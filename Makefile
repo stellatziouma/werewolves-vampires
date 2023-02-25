@@ -20,5 +20,9 @@ $(EXEC):
 # run the program
 run: $(EXEC)
 	./$(EXEC)
+	
+# delete executable
+clean:
+	del $(EXEC)
 
-.PHONY: run
+.PHONY: run clean
