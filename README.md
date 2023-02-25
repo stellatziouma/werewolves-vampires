@@ -35,3 +35,6 @@ The following list contains links to all used sprites.
 - [grass](https://opengameart.org/content/2d-modified-dark-forest-tileset)
 - [potion](https://opengameart.org/content/potion-bottles)
 - [lake](https://craftpix.net/freebies/free-top-down-military-boats-pixel-art/)
+
+---
+ © Stella Tziouma & Giorgos Sofronas
