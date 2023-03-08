@@ -15,7 +15,21 @@ A fun and simple game where a team of werewolves fights against a team of vampir
 This project was created entirely in C++ for the Object-Oriented Programming course during our 3rd semester. It received a grade of 9,4/10. A detailed description of the assignment can be found in the root of the repository in Greek.
 
 ## How to Play
-To play the game, simply clone the repository and compile it using make or manually through the provided command in the Makefile. Please note that this game is designed solely for the Windows operating system.
+To play the game, simply open Command Prompt or Windows PowerShell and execute the following commands:
+```cmd
+  git clone https://github.com/stellatziouma/werewolves-vampires.git
+  cd werewolves-vampires
+```
+After that, if you have `make` installed execute:
+```cmd
+  make run
+```
+Otherwise, execute:
+```cmd
+  g++ -Wall -Werror -O0 -I./include -I./include/sdl2 -I./include/headers -Llib -o GAME ./src/*.cpp -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf
+  GAME.exe
+```
+**Please note that this game is designed solely for the Windows operating system.**
 
 ## Game Rules
 Here are some basic rules to help you play the game:
