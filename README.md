@@ -9,7 +9,7 @@ A fun and simple game where a team of werewolves fights against a team of vampir
 
 ## Authors
 - [Stella Tziouma](https://github.com/stellatziouma)
-- [Giorgos Sofronas](https://github.com/giorgossofronas)
+- [Giorgos Sofronas](https://github.com/gsofron)
 
 ## About
 This project was created entirely in C++ for the Object-Oriented Programming course during our 3rd semester. It received a grade of 9,4/10. A detailed description of the assignment can be found in the root of the repository in Greek.
