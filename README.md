@@ -26,7 +26,7 @@ After that, if you have `make` installed execute:
 ```
 Otherwise, execute:
 ```cmd
-  g++ -Wall -Werror -O0 -I./include -I./include/sdl2 -I./include/headers -Llib -o GAME ./src/*.cpp -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf
+  g++ -Wall -Werror -g -O2 -I./include -I./include/sdl2 -I./include/headers -Llib -o GAME ./src/*.cpp -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf
   GAME.exe
 ```
 **Please note that this game is designed solely for the Windows operating system.**
