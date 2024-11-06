@@ -1,10 +1,10 @@
-<h1 align="center">Werewolves-Vampires</h1>
+<h1 align="center"><i>Werewolves VS Vampires</i></h1>
 
 <p align="center">
+    <b><i>Which team will survive? How will the Avatar impact the final result?</i></b><br><br>
     <img src="res/game.gif" width=700>
 </p>
 
-<center><b><i>Werewolves VS Vampires! Which team will survive? How will the Avatar impact the final result?</i></b></center><br>
 A fun and simple game where a team of werewolves fights against a team of vampires. The last team standing wins. As the Avatar (player), you have the ability to aid the team of your choice by using magical potions that increase each creature's health to the maximum amount.
 
 ## Authors
@@ -12,7 +12,9 @@ A fun and simple game where a team of werewolves fights against a team of vampir
 - [Giorgos Sofronas](https://github.com/gsofron)
 
 ## About
-This project was created entirely in C++ for the Object-Oriented Programming course during our 3rd semester. It received a grade of 9,4/10. A detailed description of the assignment can be found in the root of the repository in Greek.
+This project was created entirely in C++ for the "Object-Oriented Programming" course during our 3rd semester of undergraduate studies (Winter 2022). It received a grade of 9,4/10. A detailed description of the assignment can be found in the root of the repository in Greek.
+
+While the assignment didn't require a GUI, as it suggested using CMD or PS for interaction, we thought it would be more enjoyable to implement a visual UI. Not only would it enhance the gaming experience, but it would also give us the opportunity to explore a UI library in C++ and expand our skills in the process.
 
 ## How to Play
 To play the game, simply open Command Prompt or Windows PowerShell and execute the following commands:
@@ -37,7 +39,7 @@ Here are some basic rules to help you play the game:
 - Use the *h* key to heal the team in favor. Note that werewolves can only be healed at night and vampires at day.
 - Use the *p* key to pause/unpause the game.
 
-Have fun playing and good luck!!!
+Have fun playing and good luck!
 
 ## Credits
 For the UI we used the open source library [SDL](https://www.libsdl.org/).<br>
